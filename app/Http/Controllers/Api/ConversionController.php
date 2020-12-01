@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Services\RomanNumeralConverter;
 use App\Models\Conversion;
+use App\Http\Resources\ConversionCollection;
+use App\Http\Resources\ConvertedInteger;
 
 class ConversionController extends Controller
 {
@@ -17,10 +20,13 @@ class ConversionController extends Controller
 
     public function postNewInteger(Request $request)
     {
-
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'integer' => 'required|numeric|min:1|max:3999'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
         $conversion = new Conversion();
 
@@ -41,26 +47,20 @@ class ConversionController extends Controller
 
         }
 
-        return response()->json($convertedInteger, 201);
+        return new ConvertedInteger();
     }
 
     public function getRecentlyConvertedIntegers()
     {
         $conversion = new Conversion();
 
-        $recentlyConvertedIntegers = $conversion->recentlyConvertedIntegers()->get();
-
-        return response()->json($recentlyConvertedIntegers, 201);
-
+        return new ConversionCollection($conversion->recentlyConvertedIntegers()->get());
     }
 
     public function getTopTenConvertedIntegers()
     {
         $conversion = new Conversion();
 
-        $topTenConvertedIntegers = $conversion->topTenConvertedIntegers()->get();
-
-        return response()->json($topTenConvertedIntegers, 201);
+        return new ConversionCollection($conversion->topTenConvertedIntegers()->get());
     }
-
 }
