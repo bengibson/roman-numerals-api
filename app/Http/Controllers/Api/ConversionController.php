@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\UpdateConversionFormRequest;
 use App\Services\RomanNumeralConverter;
 use App\Models\Conversion;
 use App\Http\Resources\ConversionCollection;
@@ -18,17 +17,8 @@ class ConversionController extends Controller
         $this->converter = new RomanNumeralConverter();
     }
 
-    public function postNewInteger(Request $request)
+    public function postNewInteger(Conversion $conversion, UpdateConversionFormRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'integer' => 'required|numeric|min:1|max:3999'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $conversion = new Conversion();
 
         $convertedInteger = $this->converter->convertInteger($request->integer);
 
