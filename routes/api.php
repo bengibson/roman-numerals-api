@@ -19,7 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/integer', [ConversionController::class, 'postNewInteger']);
+Route::get('/convert/{integer}', [ConversionController::class, 'store']);
 
 Route::get('/recently-converted-integers', [ConversionController::class, 'getRecentlyConvertedIntegers']);
 

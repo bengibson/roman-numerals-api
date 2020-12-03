@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateConversionFormRequest;
+use App\Http\Requests\StoreConversionFormRequest;
 use App\Services\RomanNumeralConverter;
 use App\Models\Conversion;
 use App\Http\Resources\ConversionCollection;
@@ -17,40 +17,25 @@ class ConversionController extends Controller
         $this->converter = new RomanNumeralConverter();
     }
 
-    public function postNewInteger(Conversion $conversion, UpdateConversionFormRequest $request)
+    public function store($integer, StoreConversionFormRequest $request)
     {
+        $conversion = Conversion::updateOrCreate(
+            ['integer' => $integer],
+            ['conversion' => $this->converter->convertInteger($integer)]
+        );
 
-        $convertedInteger = $this->converter->convertInteger($request->integer);
-
-        $updateConversion = $conversion->where('integer', $request->integer)->first();
-
-        if ($updateConversion !== null) {
-
-            $updateConversion->update(['hits' => $updateConversion->increment('hits', 1)]);
-
-        } else {
-
-            $conversion->integer = $request->integer;
-            $conversion->conversion = $convertedInteger;
-            $conversion->hits = 1;
-            $conversion->save();
-
-        }
+        $conversion->increment('hits', 1);
 
         return new ConvertedInteger();
     }
 
-    public function getRecentlyConvertedIntegers()
+    public function getRecentlyConvertedIntegers(Conversion $conversion)
     {
-        $conversion = new Conversion();
-
         return new ConversionCollection($conversion->recentlyConvertedIntegers()->get());
     }
 
-    public function getTopTenConvertedIntegers()
+    public function getTopTenConvertedIntegers(Conversion $conversion)
     {
-        $conversion = new Conversion();
-
         return new ConversionCollection($conversion->topTenConvertedIntegers()->get());
     }
 }
