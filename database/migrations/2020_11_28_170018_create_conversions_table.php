@@ -17,7 +17,7 @@ class CreateConversionsTable extends Migration
             $table->id();
             $table->integer('integer')->nullable($value = false)->unsigned();
             $table->string('conversion')->nullable($value = false);
-            $table->integer('hits')->unsigned();
+            $table->integer('hits')->unsigned()->nullable($value = 0);
             $table->timestamps();
         });
     }
