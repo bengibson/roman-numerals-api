@@ -3,28 +3,26 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreConversionFormRequest;
+use App\Http\Resources\ConvertedInteger;
+use App\Repositories\ConversionRepository;
 use App\Services\RomanNumeralConverter;
 use App\Models\Conversion;
 use App\Http\Resources\ConversionCollection;
-use App\Http\Resources\ConvertedInteger;
 
 class ConversionController extends Controller
 {
     private RomanNumeralConverter $converter;
+    private $conversionRepository;
 
-    public function __construct()
+    public function __construct(ConversionRepository $conversionRepository)
     {
         $this->converter = new RomanNumeralConverter();
+        $this->conversionRepository = $conversionRepository;
     }
 
     public function store($integer, StoreConversionFormRequest $request)
     {
-        $conversion = Conversion::updateOrCreate(
-            ['integer' => $integer],
-            ['conversion' => $this->converter->convertInteger($integer)]
-        );
-
-        $conversion->increment('hits', 1);
+        $this->conversionRepository->updateOrCreate($integer);
 
         return new ConvertedInteger();
     }
