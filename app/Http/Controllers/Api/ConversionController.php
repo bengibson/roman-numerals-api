@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreConversionFormRequest;
-use App\Http\Resources\ConvertedInteger;
 use App\Models\Conversion;
 use App\Repositories\ConversionRepository;
 use App\Services\RomanNumeralConverter;
@@ -22,9 +21,7 @@ class ConversionController extends Controller
 
     public function store($integer, StoreConversionFormRequest $request)
     {
-        $this->conversionRepository->updateOrCreate($integer);
-
-        return new ConvertedInteger();
+        return $this->conversionRepository->updateOrCreate($integer);
     }
 
     public function getRecentlyConvertedIntegers(Conversion $query)

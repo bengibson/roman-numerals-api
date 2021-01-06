@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories;
+use App\Http\Resources\ConvertedInteger;
 use App\Services\RomanNumeralConverter;
 use App\Models\Conversion;
 
@@ -21,6 +22,8 @@ class ConversionRepository implements ConversionInterface
         );
 
         $conversion->increment('hits', 1);
+
+        return new ConvertedInteger();
     }
 
     public function recentlyConvertedIntegers($query)
