@@ -4,9 +4,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreConversionFormRequest;
 use App\Http\Resources\ConvertedInteger;
+use App\Models\Conversion;
 use App\Repositories\ConversionRepository;
 use App\Services\RomanNumeralConverter;
-use App\Models\Conversion;
 use App\Http\Resources\ConversionCollection;
 
 class ConversionController extends Controller
@@ -27,13 +27,13 @@ class ConversionController extends Controller
         return new ConvertedInteger();
     }
 
-    public function getRecentlyConvertedIntegers(Conversion $conversion)
+    public function getRecentlyConvertedIntegers(Conversion $query)
     {
-        return new ConversionCollection($conversion->recentlyConvertedIntegers()->get());
+        return new ConversionCollection($this->conversionRepository->recentlyConvertedIntegers($query)->get());
     }
 
-    public function getTopTenConvertedIntegers(Conversion $conversion)
+    public function getTopTenConvertedIntegers(Conversion $query)
     {
-        return new ConversionCollection($conversion->topTenConvertedIntegers()->get());
+        return new ConversionCollection($this->conversionRepository->topTenConvertedIntegers($query)->get());
     }
 }

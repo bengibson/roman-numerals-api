@@ -22,4 +22,15 @@ class ConversionRepository implements ConversionInterface
 
         $conversion->increment('hits', 1);
     }
+
+    public function recentlyConvertedIntegers($query)
+    {
+        $date = \Carbon\Carbon::today()->subDays(7);
+        return $query->where('updated_at', '>=', $date)->orderBy('updated_at', 'desc');
+    }
+
+    public function topTenConvertedIntegers($query)
+    {
+        return $query->orderBy('hits','DESC')->orderBy('hits', 'desc')->limit(10);
+    }
 }
