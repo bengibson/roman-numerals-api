@@ -11,12 +11,12 @@ use App\Http\Resources\ConversionCollection;
 class ConversionController extends Controller
 {
     private RomanNumeralConverter $converter;
-    private $conversionRepository;
+    private ConversionRepository $conversionRepository;
 
-    public function __construct(ConversionRepository $conversionRepository)
+    public function __construct()
     {
         $this->converter = new RomanNumeralConverter();
-        $this->conversionRepository = $conversionRepository;
+        $this->conversionRepository = new ConversionRepository();
     }
 
     public function store($integer, StoreConversionFormRequest $request)
